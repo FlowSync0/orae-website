@@ -25,9 +25,9 @@
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
-# CSS and JS - cache with revalidation
+# CSS and JS - revalidate on each visit so copy changes appear quickly
 /*.css
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
 
 /*.js
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=0, must-revalidate
