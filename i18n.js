@@ -19,7 +19,7 @@ const translations = {
     "products.fan3.desc": "Warm wood blades with integrated LED light. 3 color temperature settings.",
     "products.fan4.name": "Natural Brown Wood with Light",
     "products.fan4.desc": "Rich brown wood with integrated LED light. 3 color temperature settings.",
-    "products.buy": "Buy on Amazon",
+    "products.buy": "Buy on Leboncoin",
     "products.manual": "Download Manual",
     "features.tag": "Why Orae",
     "features.title": "Designed for Living",
@@ -34,9 +34,10 @@ const translations = {
     "about.tag": "Our Story",
     "about.title": "Air, Reimagined",
     "about.text1": "Orae was born from a simple idea: ceiling fans should be beautiful, silent, and efficient. We design every fan with obsessive attention to detail, from the curve of each blade to the precision of the motor.",
-    "about.text2": "Available exclusively on Amazon for fast, reliable delivery to your door.",
+    "about.text2": "Available now in France through our Leboncoin listings, with direct support from ORAE.",
     "footer.rights": "All rights reserved.",
-    "footer.amazon": "Available exclusively on Amazon."
+    "footer.contact": "Contact:",
+    "footer.availability": "Available through Leboncoin."
   },
   fr: {
     "nav.products": "Produits",
@@ -58,7 +59,7 @@ const translations = {
     "products.fan3.desc": "Pales en bois chaleureux avec LED intégrée. 3 températures de couleur.",
     "products.fan4.name": "Bois Brun Naturel avec Lumière",
     "products.fan4.desc": "Bois brun riche avec LED intégrée. 3 températures de couleur.",
-    "products.buy": "Acheter sur Amazon",
+    "products.buy": "Acheter sur Leboncoin",
     "products.manual": "Télécharger le Manuel",
     "features.tag": "Pourquoi Orae",
     "features.title": "Conçu pour Vivre",
@@ -73,9 +74,10 @@ const translations = {
     "about.tag": "Notre Histoire",
     "about.title": "L'Air, Réinventé",
     "about.text1": "Orae est né d'une idée simple : les ventilateurs de plafond doivent être beaux, silencieux et efficaces. Nous concevons chaque ventilateur avec une attention obsessionnelle aux détails, de la courbe de chaque pale à la précision du moteur.",
-    "about.text2": "Disponible exclusivement sur Amazon pour une livraison rapide et fiable.",
+    "about.text2": "Disponible dès maintenant en France via nos annonces Leboncoin, avec un contact direct ORAE.",
     "footer.rights": "Tous droits réservés.",
-    "footer.amazon": "Disponible exclusivement sur Amazon."
+    "footer.contact": "Contact :",
+    "footer.availability": "Disponible via Leboncoin."
   }
 };
 
@@ -108,8 +110,8 @@ function applyTranslations(lang) {
 
   // Update page title
   document.title = lang === "fr"
-    ? "Orae - Ventilateurs de Plafond Silencieux Premium | Design Moderne"
-    : "Orae - Premium Silent 3-Blade Ceiling Fans | Modern Design";
+    ? "OraeCF - Ventilateurs de Plafond Silencieux Premium | Design Moderne"
+    : "OraeCF - Premium Silent 3-Blade Ceiling Fans | Modern Design";
 }
 
 function toggleLanguage() {

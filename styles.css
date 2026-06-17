@@ -257,7 +257,7 @@ img {
 .hero__bg {
   position: absolute;
   inset: 0;
-  background: url('assets/hero-bg.webp') center/cover no-repeat;
+  background: url('assets/lifestyle/hero-bg.webp') center/cover no-repeat;
   z-index: 0;
 }
 
@@ -718,9 +718,20 @@ img {
 }
 
 .footer__copy,
-.footer__amazon {
+.footer__contact,
+.footer__availability {
   font-size: 0.8rem;
   color: var(--color-text-muted);
+}
+
+.footer__contact a {
+  color: var(--color-text);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.footer__contact a:hover {
+  color: var(--color-accent-dark);
 }
 
 @media (max-width: 600px) {
