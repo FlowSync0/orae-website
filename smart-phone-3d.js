@@ -2,126 +2,11 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function roundedRect(ctx, x, y, width, height, radius) {
-  const r = Math.min(radius, width / 2, height / 2);
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + width - r, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
-  ctx.lineTo(x + width, y + height - r);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
-  ctx.lineTo(x + r, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
-
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = reject;
-    image.src = src;
-  });
-}
-
-async function createScreenTexture(src) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 900;
-  canvas.height = 1940;
-
-  const ctx = canvas.getContext("2d");
-  const fanImage = await loadImage(src).catch(() => null);
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  roundedRect(ctx, 36, 28, 828, 1884, 98);
-  ctx.fillStyle = "#f7f5f1";
-  ctx.fill();
-
-  const gradient = ctx.createLinearGradient(0, 28, 0, 1912);
-  gradient.addColorStop(0, "rgba(255,255,255,0.94)");
-  gradient.addColorStop(0.62, "rgba(246,244,240,0.98)");
-  gradient.addColorStop(1, "rgba(239,235,229,0.98)");
-  roundedRect(ctx, 36, 28, 828, 1884, 98);
-  ctx.fillStyle = gradient;
-  ctx.fill();
-
-  roundedRect(ctx, 365, 70, 170, 18, 9);
-  ctx.fillStyle = "#1f1f1f";
-  ctx.fill();
-
-  ctx.fillStyle = "#77736d";
-  ctx.font = "600 27px Inter, Arial, sans-serif";
-  ctx.letterSpacing = "3px";
-  ctx.fillText("ORAE", 104, 180);
-  ctx.fillText("TUYA", 716, 180);
-
-  roundedRect(ctx, 100, 250, 700, 620, 64);
-  ctx.fillStyle = "#ffffff";
-  ctx.fill();
-
-  if (fanImage) {
-    const imageSize = 610;
-    ctx.save();
-    roundedRect(ctx, 136, 285, 628, 548, 48);
-    ctx.clip();
-    ctx.drawImage(fanImage, 145, 245, imageSize, imageSize);
-    ctx.restore();
-  }
-
-  ctx.fillStyle = "#706b64";
-  ctx.font = "500 25px Inter, Arial, sans-serif";
-  ctx.fillText("Natural Wood", 104, 965);
-  ctx.fillStyle = "#1f1f1f";
-  ctx.font = "700 27px Inter, Arial, sans-serif";
-  ctx.fillText("Ventilation active", 520, 965);
-
-  ctx.save();
-  ctx.translate(450, 1238);
-  ctx.lineWidth = 34;
-  ctx.strokeStyle = "#ede2d4";
-  ctx.beginPath();
-  ctx.arc(0, 0, 132, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.strokeStyle = "#c9935e";
-  ctx.beginPath();
-  ctx.arc(0, 0, 132, -Math.PI / 2, Math.PI * 0.22);
-  ctx.stroke();
-  ctx.fillStyle = "#ffffff";
-  ctx.beginPath();
-  ctx.arc(0, 0, 94, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#1f1f1f";
-  ctx.font = "400 74px Georgia, serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("3", 0, 6);
-  ctx.restore();
-
-  const controls = [
-    ["Light", 108],
-    ["Timer", 345],
-    ["Reverse", 582],
-  ];
-  controls.forEach(([label, x]) => {
-    roundedRect(ctx, x, 1644, 208, 126, 30);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.fillStyle = "#8a857e";
-    ctx.font = "600 25px Inter, Arial, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(label, x + 104, 1707);
-  });
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 8;
-  texture.needsUpdate = true;
-  return texture;
-}
+const baseRotation = new THREE.Euler(-0.06, -0.36, -0.02);
+const hoverTiltLimit = {
+  x: 0.065,
+  y: 0.12,
+};
 
 function tuneModelMaterials(model) {
   model.traverse((child) => {
@@ -129,89 +14,36 @@ function tuneModelMaterials(model) {
     child.castShadow = false;
     child.receiveShadow = false;
 
-    if (child.material) {
-      child.material = child.material.clone();
-      child.material.envMapIntensity = 0.65;
-      if (child.material.metalness !== undefined) {
-        child.material.metalness = Math.min(0.85, child.material.metalness + 0.08);
-      }
-      if (child.material.roughness !== undefined) {
-        child.material.roughness = Math.max(0.22, child.material.roughness);
-      }
+    if (!child.material) return;
+    child.material = child.material.clone();
+
+    const materialName = child.material.name?.toLowerCase() || "";
+
+    if (child.material.map) {
+      child.material.map.anisotropy = 8;
+      child.material.map.needsUpdate = true;
+    }
+
+    if (materialName.includes("screen") && child.material.map) {
+      child.material = new THREE.MeshBasicMaterial({
+        name: child.material.name,
+        map: child.material.map,
+        toneMapped: false,
+        side: THREE.FrontSide,
+      });
+      return;
+    }
+
+    if (child.material.envMapIntensity !== undefined) {
+      child.material.envMapIntensity = 0.28;
+    }
+    if (child.material.metalness !== undefined) {
+      child.material.metalness = Math.min(0.62, child.material.metalness);
+    }
+    if (child.material.roughness !== undefined) {
+      child.material.roughness = Math.max(0.38, child.material.roughness);
     }
   });
-}
-
-function getMeshLocalBounds(mesh) {
-  mesh.geometry.computeBoundingBox();
-  return mesh.geometry.boundingBox.clone();
-}
-
-function remapGeometryUvFromPosition(mesh, bounds) {
-  const geometry = mesh.geometry;
-  const position = geometry.getAttribute("position");
-  const uv = new Float32Array(position.count * 2);
-  const width = Math.max(0.0001, bounds.max.x - bounds.min.x);
-  const height = Math.max(0.0001, bounds.max.y - bounds.min.y);
-
-  for (let i = 0; i < position.count; i += 1) {
-    uv[i * 2] = (position.getX(i) - bounds.min.x) / width;
-    uv[i * 2 + 1] = (position.getY(i) - bounds.min.y) / height;
-  }
-
-  geometry.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
-  geometry.attributes.uv.needsUpdate = true;
-}
-
-function findDisplayMesh(model) {
-  const candidates = [];
-
-  model.traverse((child) => {
-    if (!child.isMesh || !child.geometry?.attributes?.position) return;
-
-    const bounds = getMeshLocalBounds(child);
-    const size = bounds.getSize(new THREE.Vector3());
-
-    const looksLikeFrontDisplay =
-      bounds.max.z > 0.34 &&
-      size.z < 0.08 &&
-      size.x > 5.6 &&
-      size.x < 7.2 &&
-      size.y > 13 &&
-      size.y < 14.6;
-
-    if (!looksLikeFrontDisplay) return;
-
-    const flatnessScore = 1 / Math.max(size.z, 0.0001);
-    const areaScore = size.x * size.y;
-    const frontScore = bounds.max.z * 20;
-    candidates.push({
-      mesh: child,
-      bounds,
-      score: flatnessScore + areaScore + frontScore,
-    });
-  });
-
-  candidates.sort((a, b) => b.score - a.score);
-  return candidates[0] || null;
-}
-
-function applyScreenTextureToModel(model, screenTexture) {
-  const display = findDisplayMesh(model);
-  if (!display) return null;
-
-  remapGeometryUvFromPosition(display.mesh, display.bounds);
-  screenTexture.wrapS = THREE.ClampToEdgeWrapping;
-  screenTexture.wrapT = THREE.ClampToEdgeWrapping;
-  screenTexture.needsUpdate = true;
-
-  display.mesh.material = new THREE.MeshBasicMaterial({
-    map: screenTexture,
-    toneMapped: false,
-    side: THREE.DoubleSide,
-  });
-  display.mesh.renderOrder = 8;
-  return display.mesh;
 }
 
 async function mountPhone(container) {
@@ -222,42 +54,36 @@ async function mountPhone(container) {
     canvas,
     antialias: true,
     alpha: true,
-    preserveDrawingBuffer: true,
     powerPreference: "high-performance",
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 0.88;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
   camera.position.set(0, 0, 22);
 
   const phoneRoot = new THREE.Group();
-  phoneRoot.rotation.set(-0.06, -0.36, -0.02);
+  phoneRoot.rotation.copy(baseRotation);
   phoneRoot.position.set(0.12, -0.08, 0);
   scene.add(phoneRoot);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xddd6cc, 2.2));
+  scene.add(new THREE.HemisphereLight(0xfff7ed, 0xd8d0c7, 1.18));
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+  const keyLight = new THREE.DirectionalLight(0xfff3e2, 1.45);
   keyLight.position.set(3.5, 6, 8);
   scene.add(keyLight);
 
-  const rimLight = new THREE.DirectionalLight(0xffffff, 1.35);
+  const rimLight = new THREE.DirectionalLight(0xffffff, 0.55);
   rimLight.position.set(-5, 1.5, 7);
   scene.add(rimLight);
 
   const loader = new GLTFLoader();
-  const [gltf, screenTexture] = await Promise.all([
-    loader.loadAsync(container.dataset.modelSrc),
-    createScreenTexture(container.dataset.screenImage),
-  ]);
-
+  const gltf = await loader.loadAsync(container.dataset.modelSrc);
   const model = gltf.scene;
   tuneModelMaterials(model);
-  const screenMesh = applyScreenTextureToModel(model, screenTexture);
 
   const bounds = new THREE.Box3().setFromObject(model);
   const center = bounds.getCenter(new THREE.Vector3());
@@ -267,8 +93,35 @@ async function mountPhone(container) {
   model.scale.setScalar(scale);
   phoneRoot.add(model);
 
-  container.dataset.screenMode = screenMesh ? "model-material" : "fallback";
   container.classList.add("phone-model--ready");
+
+  const pointerTilt = {
+    currentX: 0,
+    currentY: 0,
+    targetX: 0,
+    targetY: 0,
+  };
+
+  function handlePointerMove(event) {
+    if (reduceMotion) return;
+
+    const bounds = container.getBoundingClientRect();
+    const relativeX = (event.clientX - bounds.left) / Math.max(bounds.width, 1);
+    const relativeY = (event.clientY - bounds.top) / Math.max(bounds.height, 1);
+
+    pointerTilt.targetY = (relativeX - 0.5) * hoverTiltLimit.y;
+    pointerTilt.targetX = -(relativeY - 0.5) * hoverTiltLimit.x;
+  }
+
+  function handlePointerLeave() {
+    pointerTilt.targetX = 0;
+    pointerTilt.targetY = 0;
+  }
+
+  if (!reduceMotion) {
+    container.addEventListener("pointermove", handlePointerMove);
+    container.addEventListener("pointerleave", handlePointerLeave);
+  }
 
   function resize() {
     const width = Math.max(1, container.clientWidth);
@@ -288,10 +141,17 @@ async function mountPhone(container) {
 
   function render(now) {
     const elapsed = (now - start) / 1000;
+    const floatY = reduceMotion ? 0 : Math.sin(elapsed * 0.75) * 0.024;
+    const floatX = reduceMotion ? 0 : Math.sin(elapsed * 0.55) * 0.01;
+
     if (!reduceMotion) {
-      phoneRoot.rotation.y = -0.36 + Math.sin(elapsed * 0.75) * 0.035;
-      phoneRoot.rotation.x = -0.06 + Math.sin(elapsed * 0.55) * 0.012;
+      pointerTilt.currentX += (pointerTilt.targetX - pointerTilt.currentX) * 0.08;
+      pointerTilt.currentY += (pointerTilt.targetY - pointerTilt.currentY) * 0.08;
     }
+
+    phoneRoot.rotation.x = baseRotation.x + floatX + pointerTilt.currentX;
+    phoneRoot.rotation.y = baseRotation.y + floatY + pointerTilt.currentY;
+    phoneRoot.rotation.z = baseRotation.z;
     renderer.render(scene, camera);
     frameId = requestAnimationFrame(render);
   }
@@ -301,9 +161,9 @@ async function mountPhone(container) {
   window.addEventListener("pagehide", () => {
     cancelAnimationFrame(frameId);
     observer.disconnect();
+    container.removeEventListener("pointermove", handlePointerMove);
+    container.removeEventListener("pointerleave", handlePointerLeave);
     renderer.dispose();
-    screenTexture.dispose();
-    screenMesh?.material?.dispose();
   }, { once: true });
 }
 
