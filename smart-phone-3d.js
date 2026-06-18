@@ -1,11 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-const MODEL_FRONT_Z = 0.392;
-const MODEL_CENTER_Z = -0.1735;
-const SCREEN_WIDTH = 6.32;
-const SCREEN_HEIGHT = 13.62;
-
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function roundedRect(ctx, x, y, width, height, radius) {
@@ -147,6 +142,78 @@ function tuneModelMaterials(model) {
   });
 }
 
+function getMeshLocalBounds(mesh) {
+  mesh.geometry.computeBoundingBox();
+  return mesh.geometry.boundingBox.clone();
+}
+
+function remapGeometryUvFromPosition(mesh, bounds) {
+  const geometry = mesh.geometry;
+  const position = geometry.getAttribute("position");
+  const uv = new Float32Array(position.count * 2);
+  const width = Math.max(0.0001, bounds.max.x - bounds.min.x);
+  const height = Math.max(0.0001, bounds.max.y - bounds.min.y);
+
+  for (let i = 0; i < position.count; i += 1) {
+    uv[i * 2] = (position.getX(i) - bounds.min.x) / width;
+    uv[i * 2 + 1] = (position.getY(i) - bounds.min.y) / height;
+  }
+
+  geometry.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+  geometry.attributes.uv.needsUpdate = true;
+}
+
+function findDisplayMesh(model) {
+  const candidates = [];
+
+  model.traverse((child) => {
+    if (!child.isMesh || !child.geometry?.attributes?.position) return;
+
+    const bounds = getMeshLocalBounds(child);
+    const size = bounds.getSize(new THREE.Vector3());
+
+    const looksLikeFrontDisplay =
+      bounds.max.z > 0.34 &&
+      size.z < 0.08 &&
+      size.x > 5.6 &&
+      size.x < 7.2 &&
+      size.y > 13 &&
+      size.y < 14.6;
+
+    if (!looksLikeFrontDisplay) return;
+
+    const flatnessScore = 1 / Math.max(size.z, 0.0001);
+    const areaScore = size.x * size.y;
+    const frontScore = bounds.max.z * 20;
+    candidates.push({
+      mesh: child,
+      bounds,
+      score: flatnessScore + areaScore + frontScore,
+    });
+  });
+
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates[0] || null;
+}
+
+function applyScreenTextureToModel(model, screenTexture) {
+  const display = findDisplayMesh(model);
+  if (!display) return null;
+
+  remapGeometryUvFromPosition(display.mesh, display.bounds);
+  screenTexture.wrapS = THREE.ClampToEdgeWrapping;
+  screenTexture.wrapT = THREE.ClampToEdgeWrapping;
+  screenTexture.needsUpdate = true;
+
+  display.mesh.material = new THREE.MeshBasicMaterial({
+    map: screenTexture,
+    toneMapped: false,
+    side: THREE.DoubleSide,
+  });
+  display.mesh.renderOrder = 8;
+  return display.mesh;
+}
+
 async function mountPhone(container) {
   const canvas = container.querySelector(".phone-model__canvas");
   if (!canvas) return;
@@ -190,6 +257,7 @@ async function mountPhone(container) {
 
   const model = gltf.scene;
   tuneModelMaterials(model);
+  const screenMesh = applyScreenTextureToModel(model, screenTexture);
 
   const bounds = new THREE.Box3().setFromObject(model);
   const center = bounds.getCenter(new THREE.Vector3());
@@ -199,21 +267,7 @@ async function mountPhone(container) {
   model.scale.setScalar(scale);
   phoneRoot.add(model);
 
-  const screenMaterial = new THREE.MeshBasicMaterial({
-    map: screenTexture,
-    transparent: true,
-    depthTest: false,
-    depthWrite: false,
-    toneMapped: false,
-  });
-  const screenMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale),
-    screenMaterial
-  );
-  screenMesh.position.set(0, 0, (MODEL_FRONT_Z - center.z) * scale + 0.08);
-  screenMesh.renderOrder = 10;
-  phoneRoot.add(screenMesh);
-
+  container.dataset.screenMode = screenMesh ? "model-material" : "fallback";
   container.classList.add("phone-model--ready");
 
   function resize() {
@@ -249,7 +303,7 @@ async function mountPhone(container) {
     observer.disconnect();
     renderer.dispose();
     screenTexture.dispose();
-    screenMaterial.dispose();
+    screenMesh?.material?.dispose();
   }, { once: true });
 }
 
