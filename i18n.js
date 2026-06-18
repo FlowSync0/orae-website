@@ -20,7 +20,9 @@ const translations = {
     "products.fan3.desc": "Warm wood blades with integrated LED light. 3 color temperature settings.",
     "products.fan4.name": "Natural Brown Wood with Light",
     "products.fan4.desc": "Rich brown wood with integrated LED light. 3 color temperature settings.",
-    "products.buy": "Buy on Leboncoin",
+    "products.available": "Available on",
+    "products.leboncoin": "Leboncoin",
+    "products.ebay": "eBay",
     "products.manual": "Download Manual",
     "smart.tag": "Mobile control",
     "smart.title": "Tuya Smart, from anywhere",
@@ -44,10 +46,10 @@ const translations = {
     "about.tag": "Our Story",
     "about.title": "Air, Reimagined",
     "about.text1": "Orae was born from a simple idea: ceiling fans should be beautiful, silent, and efficient. We design every fan with obsessive attention to detail, from the curve of each blade to the precision of the motor.",
-    "about.text2": "Available now in France through our Leboncoin listings, with direct support from ORAE.",
+    "about.text2": "Available now in France through our Leboncoin and eBay listings, with direct support from ORAE.",
     "footer.rights": "All rights reserved.",
     "footer.contact": "Contact:",
-    "footer.availability": "Available through Leboncoin."
+    "footer.availability": "Available through Leboncoin and eBay."
   },
   fr: {
     "nav.products": "Produits",
@@ -70,7 +72,9 @@ const translations = {
     "products.fan3.desc": "Pales en bois chaleureux avec LED intégrée. 3 températures de couleur.",
     "products.fan4.name": "Bois Brun Naturel avec Lumière",
     "products.fan4.desc": "Bois brun riche avec LED intégrée. 3 températures de couleur.",
-    "products.buy": "Acheter sur Leboncoin",
+    "products.available": "Disponible sur",
+    "products.leboncoin": "Leboncoin",
+    "products.ebay": "eBay",
     "products.manual": "Télécharger le Manuel",
     "smart.tag": "Contrôle mobile",
     "smart.title": "Pilotage Tuya depuis le téléphone",
@@ -94,10 +98,10 @@ const translations = {
     "about.tag": "Notre Histoire",
     "about.title": "L'Air, Réinventé",
     "about.text1": "Orae est né d'une idée simple : les ventilateurs de plafond doivent être beaux, silencieux et efficaces. Nous concevons chaque ventilateur avec une attention obsessionnelle aux détails, de la courbe de chaque pale à la précision du moteur.",
-    "about.text2": "Disponible dès maintenant en France via nos annonces Leboncoin, avec un contact direct ORAE.",
+    "about.text2": "Disponible dès maintenant en France via nos annonces Leboncoin et eBay, avec un contact direct ORAE.",
     "footer.rights": "Tous droits réservés.",
     "footer.contact": "Contact :",
-    "footer.availability": "Disponible via Leboncoin."
+    "footer.availability": "Disponible via Leboncoin et eBay."
   }
 };
 
