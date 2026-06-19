@@ -77,131 +77,164 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "OraeCF Ceiling Fans Collection",
-    "description": "Modern 3-blade ceiling fans with DC motor technology",
-    "numberOfItems": 4,
-    "itemListElement": [
+    "@graph": [
       {
-        "@type": "ListItem",
-        "position": 1,
-        "item": {
-          "@type": "Product",
-          "@id": "https://oraecf.com/#classic-white",
-          "url": "https://oraecf.com/#classic-white",
-          "name": "OraeCF Classic White Ceiling Fan",
-          "description": "Pure minimalism. 3-blade ceiling fan that blends seamlessly into any interior.",
-          "image": "https://oraecf.com/assets/products/classic-white-product.webp",
-          "brand": {"@type": "Brand", "name": "OraeCF"},
-          "sku": "orae-classic-white",
-          "offers": {
-            "@type": "Offer",
-            "url": "https://www.leboncoin.fr/ad/decoration/3218586543",
-            "price": 196,
-            "priceCurrency": "EUR",
-            "priceSpecification": {
-              "@type": "PriceSpecification",
-              "price": 196,
-              "priceCurrency": "EUR"
-            },
-            "availability": "https://schema.org/InStock",
-            "itemCondition": "https://schema.org/NewCondition",
-            "seller": {"@type": "Organization", "name": "ORAE"}
-          }
-        }
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "item": {
-          "@type": "Product",
-          "@id": "https://oraecf.com/#classic-rounded-white",
-          "url": "https://oraecf.com/#classic-rounded-white",
-          "name": "OraeCF Classic Rounded White Ceiling Fan",
-          "description": "Soft curves and elegant design. Modern comfort with rounded blades.",
-          "image": "https://oraecf.com/assets/products/classic-rounded-white-product.webp",
-          "brand": {"@type": "Brand", "name": "OraeCF"},
-          "sku": "orae-classic-rounded-white",
-          "offers": {
-            "@type": "Offer",
-            "url": "https://www.leboncoin.fr/ad/decoration/3218586945",
-            "price": 196,
-            "priceCurrency": "EUR",
-            "priceSpecification": {
-              "@type": "PriceSpecification",
-              "price": 196,
-              "priceCurrency": "EUR"
-            },
-            "availability": "https://schema.org/InStock",
-            "itemCondition": "https://schema.org/NewCondition",
-            "seller": {"@type": "Organization", "name": "ORAE"}
-          }
-        }
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "item": {
-          "@type": "Product",
-          "@id": "https://oraecf.com/#natural-wood-light",
-          "url": "https://oraecf.com/#natural-wood-light",
-          "name": "OraeCF Natural Wood Ceiling Fan with LED Light",
-          "description": "Warm wood blades with integrated LED light. 3 color temperature settings.",
-          "image": "https://oraecf.com/assets/products/natural-wood-light-product.webp",
-          "brand": {"@type": "Brand", "name": "OraeCF"},
-          "sku": "orae-natural-wood-light",
-          "additionalProperty": {
-            "@type": "PropertyValue",
-            "name": "LED Light",
-            "value": "3 color temperatures"
+        "@type": "ItemList",
+        "@id": "https://oraecf.com/#product-collection",
+        "name": "OraeCF Ceiling Fans Collection",
+        "description": "Modern 3-blade ceiling fans with DC motor technology",
+        "numberOfItems": 4,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "url": "https://oraecf.com/#classic-white",
+            "item": {
+              "@id": "https://oraecf.com/#classic-white"
+            }
           },
-          "offers": {
-            "@type": "Offer",
-            "url": "https://www.leboncoin.fr/ad/decoration/3218587917",
-            "price": 209,
-            "priceCurrency": "EUR",
-            "priceSpecification": {
-              "@type": "PriceSpecification",
-              "price": 209,
-              "priceCurrency": "EUR"
-            },
-            "availability": "https://schema.org/InStock",
-            "itemCondition": "https://schema.org/NewCondition",
-            "seller": {"@type": "Organization", "name": "ORAE"}
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "url": "https://oraecf.com/#classic-rounded-white",
+            "item": {
+              "@id": "https://oraecf.com/#classic-rounded-white"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "url": "https://oraecf.com/#natural-wood-light",
+            "item": {
+              "@id": "https://oraecf.com/#natural-wood-light"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "url": "https://oraecf.com/#natural-brown-wood-light",
+            "item": {
+              "@id": "https://oraecf.com/#natural-brown-wood-light"
+            }
           }
+        ]
+      },
+      {
+        "@type": "Product",
+        "@id": "https://oraecf.com/#classic-white",
+        "url": "https://oraecf.com/#classic-white",
+        "name": "OraeCF Classic White Ceiling Fan",
+        "description": "Pure minimalism. 3-blade ceiling fan that blends seamlessly into any interior.",
+        "image": [
+          "https://oraecf.com/assets/products/classic-white-product.webp",
+          "https://oraecf.com/assets/products/classic-white-lifestyle.webp"
+        ],
+        "brand": {"@type": "Brand", "name": "OraeCF"},
+        "sku": "orae-classic-white",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.leboncoin.fr/ad/decoration/3218586543",
+          "price": 196,
+          "priceCurrency": "EUR",
+          "priceSpecification": {
+            "@type": "PriceSpecification",
+            "price": 196,
+            "priceCurrency": "EUR"
+          },
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "seller": {"@type": "Organization", "name": "ORAE"}
         }
       },
       {
-        "@type": "ListItem",
-        "position": 4,
-        "item": {
-          "@type": "Product",
-          "@id": "https://oraecf.com/#natural-brown-wood-light",
-          "url": "https://oraecf.com/#natural-brown-wood-light",
-          "name": "OraeCF Natural Brown Wood Ceiling Fan with LED Light",
-          "description": "Rich brown wood with integrated LED light. 3 color temperature settings.",
-          "image": "https://oraecf.com/assets/products/natural-brown-wood-light-product.webp",
-          "brand": {"@type": "Brand", "name": "OraeCF"},
-          "sku": "orae-natural-brown-wood-light",
-          "additionalProperty": {
-            "@type": "PropertyValue",
-            "name": "LED Light",
-            "value": "3 color temperatures"
+        "@type": "Product",
+        "@id": "https://oraecf.com/#classic-rounded-white",
+        "url": "https://oraecf.com/#classic-rounded-white",
+        "name": "OraeCF Classic Rounded White Ceiling Fan",
+        "description": "Soft curves and elegant design. Modern comfort with rounded blades.",
+        "image": [
+          "https://oraecf.com/assets/products/classic-rounded-white-product.webp",
+          "https://oraecf.com/assets/products/classic-rounded-white-lifestyle.webp"
+        ],
+        "brand": {"@type": "Brand", "name": "OraeCF"},
+        "sku": "orae-classic-rounded-white",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.leboncoin.fr/ad/decoration/3218586945",
+          "price": 196,
+          "priceCurrency": "EUR",
+          "priceSpecification": {
+            "@type": "PriceSpecification",
+            "price": 196,
+            "priceCurrency": "EUR"
           },
-          "offers": {
-            "@type": "Offer",
-            "url": "https://www.leboncoin.fr/ad/decoration/3218588897",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "seller": {"@type": "Organization", "name": "ORAE"}
+        }
+      },
+      {
+        "@type": "Product",
+        "@id": "https://oraecf.com/#natural-wood-light",
+        "url": "https://oraecf.com/#natural-wood-light",
+        "name": "OraeCF Natural Wood Ceiling Fan with LED Light",
+        "description": "Warm wood blades with integrated LED light. 3 color temperature settings.",
+        "image": [
+          "https://oraecf.com/assets/products/natural-wood-light-product.webp",
+          "https://oraecf.com/assets/products/natural-wood-light-lifestyle.webp"
+        ],
+        "brand": {"@type": "Brand", "name": "OraeCF"},
+        "sku": "orae-natural-wood-light",
+        "additionalProperty": {
+          "@type": "PropertyValue",
+          "name": "LED Light",
+          "value": "3 color temperatures"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.leboncoin.fr/ad/decoration/3218587917",
+          "price": 209,
+          "priceCurrency": "EUR",
+          "priceSpecification": {
+            "@type": "PriceSpecification",
             "price": 209,
-            "priceCurrency": "EUR",
-            "priceSpecification": {
-              "@type": "PriceSpecification",
-              "price": 209,
-              "priceCurrency": "EUR"
-            },
-            "availability": "https://schema.org/InStock",
-            "itemCondition": "https://schema.org/NewCondition",
-            "seller": {"@type": "Organization", "name": "ORAE"}
-          }
+            "priceCurrency": "EUR"
+          },
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "seller": {"@type": "Organization", "name": "ORAE"}
+        }
+      },
+      {
+        "@type": "Product",
+        "@id": "https://oraecf.com/#natural-brown-wood-light",
+        "url": "https://oraecf.com/#natural-brown-wood-light",
+        "name": "OraeCF Natural Brown Wood Ceiling Fan with LED Light",
+        "description": "Rich brown wood with integrated LED light. 3 color temperature settings.",
+        "image": [
+          "https://oraecf.com/assets/products/natural-brown-wood-light-product.webp",
+          "https://oraecf.com/assets/products/natural-brown-wood-light-lifestyle.webp"
+        ],
+        "brand": {"@type": "Brand", "name": "OraeCF"},
+        "sku": "orae-natural-brown-wood-light",
+        "additionalProperty": {
+          "@type": "PropertyValue",
+          "name": "LED Light",
+          "value": "3 color temperatures"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.leboncoin.fr/ad/decoration/3218588897",
+          "price": 209,
+          "priceCurrency": "EUR",
+          "priceSpecification": {
+            "@type": "PriceSpecification",
+            "price": 209,
+            "priceCurrency": "EUR"
+          },
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "seller": {"@type": "Organization", "name": "ORAE"}
         }
       }
     ]
