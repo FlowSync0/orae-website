@@ -977,6 +977,23 @@ img {
   color: var(--color-accent-dark);
 }
 
+.footer__legal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+}
+
+.footer__legal a {
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+
+.footer__legal a:hover {
+  color: var(--color-text);
+}
+
 .footer__social {
   display: flex;
   align-items: center;
@@ -1020,6 +1037,104 @@ img {
   .footer__inner {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* ── Policy Page ── */
+.policy-page {
+  padding: calc(var(--nav-height) + 76px) 24px 96px;
+}
+
+.policy-hero {
+  max-width: 920px;
+  margin: 0 auto 48px;
+}
+
+.policy-hero h1 {
+  max-width: 760px;
+  margin: 16px 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 6vw, 4.75rem);
+  font-weight: 500;
+  line-height: 1.02;
+}
+
+.policy-hero p {
+  max-width: 720px;
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.policy-updated {
+  margin-top: 16px;
+  font-size: 0.86rem !important;
+}
+
+.policy-content {
+  max-width: 920px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+}
+
+.policy-section {
+  padding-top: 28px;
+  border-top: 1px solid var(--color-border);
+}
+
+.policy-section h2 {
+  margin-bottom: 14px;
+  font-family: var(--font-serif);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 500;
+}
+
+.policy-section p {
+  max-width: 780px;
+  margin-bottom: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+.policy-section a {
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.policy-template {
+  max-width: 780px;
+  margin-top: 16px;
+  padding: 22px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.policy-template p {
+  margin-bottom: 10px;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.policy-section--contact {
+  padding-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .policy-page {
+    padding-top: calc(var(--nav-height) + 48px);
+  }
+
+  .policy-hero {
+    margin-bottom: 32px;
+  }
+
+  .policy-section {
+    padding-top: 24px;
   }
 }
 
