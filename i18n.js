@@ -56,62 +56,59 @@ const translations = {
     "nav.mobile": "Mobile",
     "nav.features": "Avantages",
     "nav.about": "À propos",
-    "hero.line1": "Sublimez Votre",
-    "hero.line2": "Confort",
-    "hero.subtitle": "Ventilateurs de plafond 3 pales modernes, alliant silence et élégance.",
-    "hero.cta": "Découvrir Nos Ventilateurs",
+    "hero.line1": "Ventilateurs",
+    "hero.line2": "Silencieux",
+    "hero.subtitle": "Ventilateurs de plafond 3 pales pour chambre et salon, avec moteur DC, télécommande, fonction été/hiver et stock en France.",
+    "hero.cta": "Voir les modèles",
     "hero.scroll": "Défiler",
     "products.tag": "Collection",
-    "products.title": "Nos Ventilateurs",
-    "products.desc": "Quatre designs, une promesse : un flux d'air silencieux au style intemporel.",
+    "products.title": "Nos ventilateurs",
+    "products.desc": "Quatre modèles pour rafraîchir une chambre, un salon ou un bureau sans installer de climatisation.",
     "products.fan1.name": "Blanc Classique",
-    "products.fan1.desc": "Minimalisme pur. S'intègre parfaitement à tout intérieur.",
+    "products.fan1.desc": "Design blanc minimaliste, pensé pour une chambre, un salon ou un bureau.",
     "products.fan2.name": "Blanc Classique Arrondi",
-    "products.fan2.desc": "Courbes douces et design élégant. Confort moderne avec pales arrondies.",
+    "products.fan2.desc": "Pales arrondies et finition blanche moderne pour une pièce lumineuse.",
     "products.fan3.name": "Bois Naturel avec Lumière",
-    "products.fan3.desc": "Pales en bois chaleureux avec LED intégrée. 3 températures de couleur.",
-    "products.fan4.name": "Bois Brun Naturel avec Lumière",
-    "products.fan4.desc": "Bois brun riche avec LED intégrée. 3 températures de couleur.",
+    "products.fan3.desc": "Pales effet bois naturel avec LED intégrée et 3 températures de couleur.",
+    "products.fan4.name": "Bois Brun avec Lumière",
+    "products.fan4.desc": "Effet bois brun, LED intégrée et design 3 pales pour une ambiance chaleureuse.",
     "products.available": "Disponible sur",
     "products.leboncoin": "Leboncoin",
     "products.ebay": "eBay",
-    "products.manual": "Télécharger le Manuel",
+    "products.manual": "Télécharger le manuel",
     "smart.tag": "Contrôle mobile",
-    "smart.title": "Pilotage Tuya depuis le téléphone",
-    "smart.desc": "Associez votre ventilateur ORAE à l'application Tuya Smart pour régler la vitesse, la minuterie et l'éclairage depuis votre téléphone, à la maison ou à distance selon votre configuration Wi-Fi.",
+    "smart.title": "Réglage depuis le téléphone avec Tuya",
+    "smart.desc": "L'application Tuya permet de régler la vitesse, la minuterie et l'éclairage depuis votre téléphone, en complément de la télécommande incluse.",
     "smart.point1": "vitesses",
     "smart.point2Value": "Minuterie",
     "smart.point2": "minuterie",
-    "smart.point3": "éclairage sur les modèles compatibles",
+    "smart.point3": "éclairage sur modèles LED",
     "smart.appStore": "App Store",
     "smart.googlePlay": "Google Play",
     "features.tag": "Pourquoi Orae",
-    "features.title": "Conçu pour Vivre",
-    "features.f1.title": "Moteur Silencieux",
-    "features.f1.desc": "Moteur DC ultra-silencieux à 23dB. Vous ne l'entendrez jamais, seulement la brise légère à la vitesse 6.",
-    "features.f2.title": "Design 3 Pales",
-    "features.f2.desc": "Configuration aérodynamique à 3 pales pour une circulation d'air optimale et une esthétique moderne.",
-    "features.f3.title": "Économe en Énergie",
-    "features.f3.desc": "Jusqu'à 85% de consommation d'énergie en moins par rapport aux ventilateurs traditionnels.",
-    "features.f4.title": "Télécommande",
-    "features.f4.desc": "Télécommande incluse avec 6 vitesses, minuterie et fonction réversible.",
-    "about.tag": "Notre Histoire",
-    "about.title": "L'Air, Réinventé",
-    "about.text1": "Orae est né d'une idée simple : les ventilateurs de plafond doivent être beaux, silencieux et efficaces. Nous concevons chaque ventilateur avec une attention obsessionnelle aux détails, de la courbe de chaque pale à la précision du moteur.",
-    "about.text2": "Disponible dès maintenant en France via nos annonces Leboncoin et eBay, avec un contact direct ORAE.",
+    "features.title": "Pensé pour le confort d'été",
+    "features.f1.title": "Moteur DC silencieux",
+    "features.f1.desc": "Conçu pour les pièces de vie et les chambres, avec vitesses basses adaptées au confort nocturne.",
+    "features.f2.title": "Design 3 pales",
+    "features.f2.desc": "Une silhouette sobre qui s'intègre facilement dans une chambre, un salon ou un bureau.",
+    "features.f3.title": "Alternative à la clim",
+    "features.f3.desc": "Améliore le confort ressenti en été, sans installer une climatisation dans chaque pièce.",
+    "features.f4.title": "Télécommande incluse",
+    "features.f4.desc": "6 vitesses, minuterie, fonction réversible été/hiver et application Tuya selon la configuration Wi-Fi.",
+    "about.tag": "La marque",
+    "about.title": "ORAE, ventilateurs de plafond connectés",
+    "about.text1": "ORAE sélectionne des ventilateurs de plafond modernes pour améliorer le confort d'été sans transformer chaque pièce en installation de climatisation. L'objectif : un design sobre, un moteur DC discret, une télécommande simple et des modèles faciles à intégrer dans une chambre ou un salon.",
+    "about.text2": "ORAE est la marque. Kamlease opère la vente et le suivi client en France. Pour toute question produit, installation ou retour : contact@oraecf.com.",
     "footer.rights": "Tous droits réservés.",
     "footer.contact": "Contact :",
     "footer.availability": "Disponible via Leboncoin et eBay."
   }
 };
 
-let currentLang = "en";
+let currentLang = "fr";
 
 function detectLanguage() {
-  const saved = localStorage.getItem("orae-lang");
-  if (saved && translations[saved]) return saved;
-  const browserLang = (navigator.language || navigator.userLanguage || "en").slice(0, 2).toLowerCase();
-  return translations[browserLang] ? browserLang : "en";
+  return "fr";
 }
 
 function applyTranslations(lang) {
@@ -134,7 +131,7 @@ function applyTranslations(lang) {
 
   // Update page title
   document.title = lang === "fr"
-    ? "OraeCF - Ventilateurs de Plafond Silencieux Premium | Design Moderne"
+    ? "Ventilateur de plafond silencieux connecté | ORAE"
     : "OraeCF - Premium Silent 3-Blade Ceiling Fans | Modern Design";
 }
 
