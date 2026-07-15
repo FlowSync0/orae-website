@@ -136,10 +136,38 @@ async function mountPhone(container) {
   observer.observe(container);
   resize();
 
+  // Static single-frame rendering when the user prefers reduced motion.
+  if (reduceMotion) {
+    renderer.render(scene, camera);
+    const staticObserver = new ResizeObserver(() => {
+      resize();
+      renderer.render(scene, camera);
+    });
+    staticObserver.observe(container);
+    window.addEventListener("pagehide", (event) => {
+      if (event.persisted) return;
+      observer.disconnect();
+      staticObserver.disconnect();
+      renderer.dispose();
+    });
+    return;
+  }
+
+  // Skip rendering while the section is offscreen.
+  let inView = true;
+  const io = new IntersectionObserver((entries) => {
+    inView = entries[entries.length - 1]?.isIntersecting ?? true;
+  }, { rootMargin: "120px" });
+  io.observe(container);
+
   let frameId = 0;
   const start = performance.now();
 
   function render(now) {
+    if (!inView) {
+      frameId = requestAnimationFrame(render);
+      return;
+    }
     const elapsed = (now - start) / 1000;
     const floatY = reduceMotion ? 0 : Math.sin(elapsed * 0.75) * 0.024;
     const floatX = reduceMotion ? 0 : Math.sin(elapsed * 0.55) * 0.01;
@@ -158,13 +186,15 @@ async function mountPhone(container) {
 
   frameId = requestAnimationFrame(render);
 
-  window.addEventListener("pagehide", () => {
+  window.addEventListener("pagehide", (event) => {
+    if (event.persisted) return; // page may come back from the bfcache
     cancelAnimationFrame(frameId);
     observer.disconnect();
+    io.disconnect();
     container.removeEventListener("pointermove", handlePointerMove);
     container.removeEventListener("pointerleave", handlePointerLeave);
     renderer.dispose();
-  }, { once: true });
+  });
 }
 
 document.querySelectorAll("[data-phone-model]").forEach((container) => {

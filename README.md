@@ -1,58 +1,55 @@
-# Orae - Premium Silent Ceiling Fans
+# Orae Website
 
-Modern 3-blade ceiling fans designed for silence and elegance. DC motor technology at 23dB with 85% energy savings.
+Static marketing website for Orae ceiling fans.
 
-## 🌟 Features
+Orae sells modern 3-blade ceiling fans built around a quiet 23 dB DC motor, remote control, reverse mode, and up to 85% lower energy consumption compared with traditional AC motors.
 
-- **Ultra-Silent Operation**: 23dB motor - quieter than a whisper
-- **Energy Efficient**: Up to 85% energy savings with DC motor technology
-- **Smart Control**: Remote control with 6 speeds, timer, and reverse mode
-- **Modern Design**: Minimalist 3-blade design in multiple finishes
-- **LED Lighting**: Available with 3 color temperature settings (wood models)
+## Structure
 
-## 🛠️ Tech Stack
+- `index.html`, `styles.css`, `main.js`, `i18n.js`: live website files.
+- `fan-3d.js`: procedural Three.js ceiling fan rendered in the hero (scroll-reactive spin, pointer parallax, reduced-motion aware).
+- `smart-phone-3d.js`: Three.js phone model shown in the Tuya section.
 
-- HTML5
-- CSS3 (Custom properties, Grid, Flexbox)
-- Vanilla JavaScript
-- Lenis (Smooth scroll)
-- GSAP (Animations)
-- i18n (EN/FR translations)
+The front-end uses Lenis (smooth scroll), GSAP + ScrollTrigger (reveals, parallax, marquee, counters) and Three.js (hero fan + phone), all loaded from jsDelivr. Typography is Fraunces + Inter.
+- `assets/brand/`: Orae logo files used by the site and packaging.
+- `assets/products/`: product and collection images used by the website.
+- `assets/lifestyle/`: hero and interior lifestyle visuals.
+- `assets/icons/`: reusable SVG feature icons.
+- `assets/source/upscaled/`: source/upscaled PNGs kept for product image work.
+- `manuals/`: downloadable PDF manuals linked from the product cards.
+- `docs/`: product, Amazon, SEO, and creative notes.
+- `packaging/`: carton design SVGs and PNG previews for suppliers.
 
-## 📦 Product Line
+## Product Line
 
-1. **Classic White** - Pure minimalist design
-2. **Classic Rounded White** - Soft curves and elegance
-3. **Natural Wood with Light** - Warm wood with LED (3 color temps)
-4. **Natural Brown Wood with Light** - Rich tones with LED (3 color temps)
+1. Classic White
+2. Classic Rounded White
+3. Natural Wood with Light
+4. Natural Brown Wood with Light
 
-## 🚀 Deployment
+The shared product reference is in `docs/products/product-master.md`. Amazon content is in `docs/amazon/product-descriptions.md`.
 
-This site is deployed on Cloudflare Pages.
+## Local Development
 
-### Local Development
+Open `index.html` directly in a browser, or run a local static server from this folder.
 
-1. Clone the repository
-2. Open `index.html` in a browser or use a local server
-3. No build process required - pure HTML/CSS/JS
+```sh
+python3 -m http.server 4173
+```
 
-### SEO Optimization
+Then open `http://localhost:4173`.
 
-- Structured data (Organization, Product schemas)
-- Open Graph and Twitter Cards
-- Multilingual support (EN/FR)
-- Sitemap and robots.txt
-- Optimized images (WebP format)
+## Deployment
 
-## 📄 License
+The site is prepared for Cloudflare Pages, with `_headers`, `_redirects`, `robots.txt`, and `sitemap.xml` kept at the repository root.
+
+## Links
+
+- Website: https://oraecf.com
+- Leboncoin Classic White: https://www.leboncoin.fr/ad/decoration/3218586543
+- Leboncoin Classic Rounded White: https://www.leboncoin.fr/ad/decoration/3218586945
+- Leboncoin Natural Wood with Light: https://www.leboncoin.fr/ad/decoration/3218587917
+- Leboncoin Natural Brown Wood with Light: https://www.leboncoin.fr/ad/decoration/3218588897
+- Contact: contact@oraecf.com
 
 © 2026 Orae. All rights reserved.
-
-## 🔗 Links
-
-- Website: [orae.com](https://orae.com)
-- Amazon Store: Coming soon
-
----
-
-Built with ❤️ for modern homes

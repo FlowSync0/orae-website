@@ -1,0 +1,59 @@
+{
+  "currency": "EUR",
+  "shipping": {
+    "country": "FR",
+    "amountCents": 0,
+    "minimumBusinessDays": 2,
+    "maximumBusinessDays": 5
+  },
+  "products": [
+    {
+      "id": "classic-white",
+      "name": "ORAE Classic White",
+      "description": "Ventilateur de plafond blanc 3 pales avec moteur DC silencieux, télécommande et contrôle Tuya.",
+      "sku": "AZ-GOTU-7548",
+      "gtin": "3770042554034",
+      "priceCents": 15600,
+      "stock": 3,
+      "image": "https://oraecf.com/assets/products/classic-white-product.webp",
+      "stripePaymentLinkId": null,
+      "checkoutUrl": null
+    },
+    {
+      "id": "classic-rounded-white",
+      "name": "ORAE Classic Rounded White",
+      "description": "Ventilateur de plafond blanc aux pales arrondies, avec moteur DC silencieux, télécommande et contrôle Tuya.",
+      "sku": "KW-6BMP-VWDW",
+      "gtin": "3770042554027",
+      "priceCents": 15600,
+      "stock": 3,
+      "image": "https://oraecf.com/assets/products/classic-rounded-white-product.webp",
+      "stripePaymentLinkId": null,
+      "checkoutUrl": null
+    },
+    {
+      "id": "natural-wood-light",
+      "name": "ORAE Natural Wood avec LED",
+      "description": "Ventilateur de plafond effet bois naturel avec moteur DC silencieux, télécommande, contrôle Tuya et LED intégrée.",
+      "sku": "KM-YG4O-5DRD",
+      "gtin": "3770042554010",
+      "priceCents": 16600,
+      "stock": 3,
+      "image": "https://oraecf.com/assets/products/natural-wood-light-product.webp",
+      "stripePaymentLinkId": null,
+      "checkoutUrl": null
+    },
+    {
+      "id": "natural-brown-wood-light",
+      "name": "ORAE Natural Brown Wood avec LED",
+      "description": "Ventilateur de plafond effet bois brun avec moteur DC silencieux, télécommande, contrôle Tuya et LED intégrée.",
+      "sku": "1Q-VZP7-DANK",
+      "gtin": "3770042554003",
+      "priceCents": 16600,
+      "stock": 3,
+      "image": "https://oraecf.com/assets/products/natural-brown-wood-light-product.webp",
+      "stripePaymentLinkId": null,
+      "checkoutUrl": null
+    }
+  ]
+}

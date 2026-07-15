@@ -42,6 +42,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Local secrets
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+
 # Temporary files
 *.tmp
 *.temp
@@ -50,3 +57,7 @@ yarn-error.log*
 # Build files (if any)
 dist/
 build/
+
+# Local agent tooling & test artifacts
+.claude/
+test-results/
