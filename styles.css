@@ -570,38 +570,6 @@ html.has-cursor .cursor--view .cursor__dot {
   transform-origin: top;
 }
 
-.hero__models {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.hero__model-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid rgba(244, 239, 230, 0.32);
-  color: rgba(244, 239, 230, 0.85);
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
-
-.hero__model-name {
-  margin-left: 8px;
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.05rem;
-  color: rgba(244, 239, 230, 0.85);
-  white-space: nowrap;
-}
-
 .hero__spec {
   text-align: right;
 }
@@ -659,10 +627,6 @@ html.has-cursor .cursor--view .cursor__dot {
     flex-wrap: wrap;
     justify-content: center;
     row-gap: 20px;
-  }
-  .hero__models {
-    order: -1;
-    width: 100%;
   }
   .hero__scroll-indicator {
     display: none;
