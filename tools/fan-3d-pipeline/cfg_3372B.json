@@ -1,0 +1,66 @@
+{
+ "name": "fan-3372B",
+ "drop": [
+  "part_05.stl"
+ ],
+ "groups": {
+  "canopy": [
+   "part_04.stl"
+  ],
+  "motor": [
+   "part_03.stl"
+  ],
+  "blades": [
+   "part_00.stl",
+   "part_01.stl",
+   "part_02.stl"
+  ],
+  "led": [
+   "part_06.stl"
+  ]
+ },
+ "materials": {
+  "canopy": {
+   "color": [
+    0.09,
+    0.09,
+    0.1
+   ],
+   "roughness": 0.4,
+   "metallic": 0.4
+  },
+  "motor": {
+   "color": [
+    0.08,
+    0.08,
+    0.09
+   ],
+   "roughness": 0.42,
+   "metallic": 0.35
+  },
+  "blades": {
+   "color": [
+    0.14,
+    0.07,
+    0.035
+   ],
+   "roughness": 0.5,
+   "metallic": 0.0
+  },
+  "led": {
+   "color": [
+    1.0,
+    0.95,
+    0.85
+   ],
+   "roughness": 0.3,
+   "metallic": 0.0,
+   "emissive": [
+    1.0,
+    0.83,
+    0.6
+   ],
+   "strength": 4.0
+  }
+ }
+}

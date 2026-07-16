@@ -1,0 +1,15 @@
+{
+  "name": "fan-2149",
+  "groups": {
+    "canopy": ["part_08.stl", "part_09.stl", "part_10.stl"],
+    "rod": ["part_01.stl", "part_02.stl"],
+    "motor": ["part_03.stl", "part_04.stl", "part_00.stl"],
+    "blades": ["part_05.stl", "part_06.stl", "part_07.stl"]
+  },
+  "materials": {
+    "canopy": {"color": [0.93, 0.92, 0.89], "roughness": 0.4, "metallic": 0.0},
+    "rod": {"color": [0.93, 0.92, 0.89], "roughness": 0.38, "metallic": 0.05},
+    "motor": {"color": [0.94, 0.93, 0.9], "roughness": 0.42, "metallic": 0.0},
+    "blades": {"color": [0.95, 0.94, 0.91], "roughness": 0.34, "metallic": 0.0}
+  }
+}

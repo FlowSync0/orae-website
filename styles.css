@@ -570,8 +570,67 @@ html.has-cursor .cursor--view .cursor__dot {
   transform-origin: top;
 }
 
+.hero__models {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero__model-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(244, 239, 230, 0.32);
+  background: transparent;
+  color: rgba(244, 239, 230, 0.75);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out);
+}
+
+.hero__model-btn:hover {
+  border-color: var(--color-cream);
+  color: var(--color-cream);
+}
+
+.hero__model-btn.is-active {
+  background: var(--color-cream);
+  border-color: var(--color-cream);
+  color: var(--color-dark);
+}
+
+.hero__model-name {
+  margin-left: 8px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(244, 239, 230, 0.8);
+  white-space: nowrap;
+}
+
 .hero__spec {
   text-align: right;
+}
+
+@media (max-width: 720px) {
+  .hero__footer {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 20px;
+  }
+  .hero__models {
+    order: -1;
+    width: 100%;
+  }
+  .hero__scroll-indicator {
+    display: none;
+  }
 }
 
 .hero__spec strong {

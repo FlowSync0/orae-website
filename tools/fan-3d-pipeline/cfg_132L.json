@@ -1,0 +1,19 @@
+{
+  "name": "fan-132L",
+  "groups": {
+    "canopy": ["part_00.stl", "part_01.stl", "part_02.stl", "part_14.stl"],
+    "rod": ["part_03.stl", "part_04.stl"],
+    "motor": ["part_08.stl", "part_05.stl", "part_06.stl", "part_07.stl"],
+    "blades": ["part_09.stl", "part_10.stl", "part_11.stl"],
+    "lighthousing": ["part_12.stl"],
+    "led": ["part_13.stl"]
+  },
+  "materials": {
+    "canopy": {"color": [0.09, 0.09, 0.1], "roughness": 0.4, "metallic": 0.4},
+    "rod": {"color": [0.09, 0.09, 0.1], "roughness": 0.35, "metallic": 0.5},
+    "motor": {"color": [0.08, 0.08, 0.09], "roughness": 0.42, "metallic": 0.35},
+    "blades": {"color": [0.42, 0.24, 0.11], "roughness": 0.55, "metallic": 0.0},
+    "lighthousing": {"color": [0.08, 0.08, 0.09], "roughness": 0.42, "metallic": 0.35},
+    "led": {"color": [1.0, 0.95, 0.85], "roughness": 0.3, "metallic": 0.0, "emissive": [1.0, 0.83, 0.6], "strength": 4.0}
+  }
+}

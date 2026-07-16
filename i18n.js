@@ -11,6 +11,7 @@ const translations = {
     "hero.cta": "Discover Our Fans",
     "hero.cta2": "Smart control",
     "hero.spec": "whisper-quiet DC motor",
+    "hero.models": "Choose a model",
     "hero.scroll": "Scroll",
     "a11y.skip": "Skip to content",
     "cursor.view": "View",
@@ -103,6 +104,7 @@ const translations = {
     "hero.cta": "Découvrir Nos Ventilateurs",
     "hero.cta2": "Contrôle connecté",
     "hero.spec": "moteur DC quasi inaudible",
+    "hero.models": "Choisir un modèle",
     "hero.scroll": "Défiler",
     "a11y.skip": "Aller au contenu",
     "cursor.view": "Voir",
@@ -224,6 +226,13 @@ function applyTranslations(lang) {
     const key = el.getAttribute("data-i18n");
     if (translations[lang] && translations[lang][key]) {
       el.textContent = translations[lang][key];
+    }
+  });
+
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria");
+    if (translations[lang] && translations[lang][key]) {
+      el.setAttribute("aria-label", translations[lang][key]);
     }
   });
 

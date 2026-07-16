@@ -46,7 +46,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=20260716-faq-trust-2">
+  <link rel="stylesheet" href="styles.css?v=20260716-fans3d-1">
 
   <!-- No-JS fallback: readable fixed nav, reachable links, no dead controls -->
   <noscript>
@@ -402,6 +402,13 @@
       <div class="hero__scroll-indicator" aria-hidden="true">
         <span data-i18n="hero.scroll">Scroll</span>
         <div class="hero__scroll-line"></div>
+      </div>
+      <div class="hero__models" role="group" data-i18n-aria="hero.models" aria-label="Choose a model" data-fan-selector>
+        <button type="button" class="hero__model-btn is-active" data-fan-choice="classic-white" aria-pressed="true" data-i18n-aria="products.fan1.name" aria-label="Classic White" data-cursor="hover">01</button>
+        <button type="button" class="hero__model-btn" data-fan-choice="classic-rounded-white" aria-pressed="false" data-i18n-aria="products.fan2.name" aria-label="Classic Rounded White" data-cursor="hover">02</button>
+        <button type="button" class="hero__model-btn" data-fan-choice="natural-wood-light" aria-pressed="false" data-i18n-aria="products.fan3.name" aria-label="Natural Wood with Light" data-cursor="hover">03</button>
+        <button type="button" class="hero__model-btn" data-fan-choice="natural-brown-wood-light" aria-pressed="false" data-i18n-aria="products.fan4.name" aria-label="Natural Brown Wood with Light" data-cursor="hover">04</button>
+        <span class="hero__model-name" data-fan-label aria-live="polite">Classic White</span>
       </div>
       <div class="hero__spec">
         <strong>23&nbsp;dB</strong>
@@ -821,7 +828,7 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-  <script src="i18n.js?v=20260716-faq-trust-2"></script>
+  <script src="i18n.js?v=20260716-fans3d-1"></script>
   <script src="storefront.js?v=20260715-direct-store-1"></script>
   <script src="main.js?v=20260716-faq-trust-2"></script>
   <script type="importmap">
@@ -832,7 +839,7 @@
       }
     }
   </script>
-  <script type="module" src="fan-3d.js?v=20260715-awwwards-1"></script>
+  <script type="module" src="fan-3d.js?v=20260716-fans3d-1"></script>
   <script type="module" src="smart-phone-3d.js?v=20260618-tuya-phone-2"></script>
 </body>
 </html>
