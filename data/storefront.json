@@ -16,8 +16,8 @@
       "priceCents": 15600,
       "stock": 3,
       "image": "https://oraecf.com/assets/products/classic-white-product.webp",
-      "stripePaymentLinkId": null,
-      "checkoutUrl": null
+      "stripePaymentLinkId": "plink_1TtkLtRu5JWgiO4higgA8zMa",
+      "checkoutUrl": "https://buy.stripe.com/aFa8wRboBgkBgfg6cDcQU05"
     },
     {
       "id": "classic-rounded-white",
@@ -28,8 +28,8 @@
       "priceCents": 15600,
       "stock": 3,
       "image": "https://oraecf.com/assets/products/classic-rounded-white-product.webp",
-      "stripePaymentLinkId": null,
-      "checkoutUrl": null
+      "stripePaymentLinkId": "plink_1TtkLvRu5JWgiO4hbAwjYZGG",
+      "checkoutUrl": "https://buy.stripe.com/8x2aEZcsF1pH5AC7gHcQU06"
     },
     {
       "id": "natural-wood-light",
@@ -40,8 +40,8 @@
       "priceCents": 16600,
       "stock": 3,
       "image": "https://oraecf.com/assets/products/natural-wood-light-product.webp",
-      "stripePaymentLinkId": null,
-      "checkoutUrl": null
+      "stripePaymentLinkId": "plink_1TtkLwRu5JWgiO4hcsEQJ6YC",
+      "checkoutUrl": "https://buy.stripe.com/6oU6oJakx4BT7IKeJ9cQU07"
     },
     {
       "id": "natural-brown-wood-light",
@@ -52,8 +52,8 @@
       "priceCents": 16600,
       "stock": 3,
       "image": "https://oraecf.com/assets/products/natural-brown-wood-light-product.webp",
-      "stripePaymentLinkId": null,
-      "checkoutUrl": null
+      "stripePaymentLinkId": "plink_1TtkLyRu5JWgiO4h0SAVosWl",
+      "checkoutUrl": "https://buy.stripe.com/cNibJ3akx5FX8MO58zcQU08"
     }
   ]
 }
