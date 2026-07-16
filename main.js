@@ -288,6 +288,93 @@
     }
   }
 
+  /* ── Cookie consent (Google Analytics only loads data after opt-in) ── */
+  if (typeof gtag === "function") {
+    const CONSENT_KEY = "orae-consent";
+    const CONSENT_MAX_AGE = 1000 * 60 * 60 * 24 * 182; // ~6 months
+    const tr = (key, fallback) =>
+      (window.OraeI18n && window.OraeI18n.t(key)) || fallback;
+
+    let banner = null;
+
+    function readConsent() {
+      try {
+        const raw = localStorage.getItem(CONSENT_KEY);
+        if (!raw) return null;
+        const saved = JSON.parse(raw);
+        if (!saved.at || Date.now() - saved.at > CONSENT_MAX_AGE) return null;
+        return saved.value;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function storeConsent(value) {
+      try {
+        localStorage.setItem(CONSENT_KEY, JSON.stringify({ value, at: Date.now() }));
+      } catch (error) {
+        // Choice simply won't persist when storage is unavailable.
+      }
+    }
+
+    function applyConsent(value) {
+      gtag("consent", "update", {
+        analytics_storage: value === "granted" ? "granted" : "denied",
+      });
+    }
+
+    function hideBanner() {
+      if (banner) banner.classList.remove("consent--visible");
+    }
+
+    function showBanner() {
+      if (!banner) {
+        banner = document.createElement("div");
+        banner.className = "consent";
+        banner.setAttribute("role", "region");
+        banner.setAttribute("aria-label", "Cookies");
+        banner.innerHTML = `
+          <p class="consent__text"></p>
+          <div class="consent__actions">
+            <button type="button" class="consent__btn consent__btn--accept"></button>
+            <button type="button" class="consent__btn consent__btn--refuse"></button>
+            <a class="consent__more" href="/politique-confidentialite.html"></a>
+          </div>`;
+        document.body.appendChild(banner);
+
+        banner.querySelector(".consent__btn--accept").addEventListener("click", () => {
+          storeConsent("granted");
+          applyConsent("granted");
+          hideBanner();
+        });
+        banner.querySelector(".consent__btn--refuse").addEventListener("click", () => {
+          storeConsent("denied");
+          applyConsent("denied");
+          hideBanner();
+        });
+      }
+      const fill = () => {
+        banner.querySelector(".consent__text").textContent = tr(
+          "consent.text",
+          "Nous utilisons des cookies de mesure d'audience uniquement si vous les acceptez."
+        );
+        banner.querySelector(".consent__btn--accept").textContent = tr("consent.accept", "Accepter");
+        banner.querySelector(".consent__btn--refuse").textContent = tr("consent.refuse", "Refuser");
+        banner.querySelector(".consent__more").textContent = tr("consent.more", "En savoir plus");
+      };
+      fill();
+      document.addEventListener("orae:languagechange", fill);
+      requestAnimationFrame(() => banner.classList.add("consent--visible"));
+    }
+
+    const saved = readConsent();
+    if (saved === "granted") applyConsent("granted");
+    else if (saved === null) showBanner();
+
+    const manageBtn = document.getElementById("manageCookies");
+    if (manageBtn) manageBtn.addEventListener("click", showBanner);
+  }
+
   /* ── Product image lightbox ── */
   const mediaEls = document.querySelectorAll(".product-row__media");
   if (mediaEls.length) {
