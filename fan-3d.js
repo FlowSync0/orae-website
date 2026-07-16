@@ -177,10 +177,32 @@ function loadFanModel(id) {
       const anchorY = (anchorBox.min.y + anchorBox.max.y) / 2;
       node.position.y = BLADE_PLANE_Y - anchorY;
 
-      return { node, blades };
+      return { node, blades, materials: collectMaterials(node) };
     }));
   }
   return modelCache.get(id);
+}
+
+function collectMaterials(node) {
+  const set = new Set();
+  node.traverse((child) => {
+    if (child.isMesh && child.material) set.add(child.material);
+  });
+  return [...set];
+}
+
+function setEntryOpacity(entry, opacity) {
+  entry.materials.forEach((material) => {
+    material.transparent = true;
+    material.opacity = opacity;
+  });
+}
+
+function resetEntryOpacity(entry) {
+  entry.materials.forEach((material) => {
+    material.transparent = false;
+    material.opacity = 1;
+  });
 }
 
 function labelFor(id) {
@@ -238,10 +260,16 @@ function mountFan(container) {
   stage.position.y = 0.55;
   scene.add(stage);
 
-  let current = buildProceduralFan();
+  // The procedural fan stays hidden behind the canvas fade: it is only the
+  // fallback shown when the real models cannot load.
+  const procedural = buildProceduralFan();
+  procedural.materials = collectMaterials(procedural.node);
+  let current = procedural;
   stage.add(current.node);
 
-  container.classList.add("fan-3d--ready");
+  function reveal() {
+    container.classList.add("fan-3d--ready");
+  }
 
   const numEl = document.querySelector("[data-fan-num]");
   const labelEl = document.querySelector("[data-fan-label]");
@@ -283,11 +311,14 @@ function mountFan(container) {
     try {
       const entry = await loadFanModel(id);
       if (activeId === id) return;
+      const isFirst = !activeId;
       activeId = id;
       syncLabel();
-      if (reduceMotion || !animate) {
+      if (reduceMotion || !animate || isFirst) {
+        // First real model appears through the canvas CSS fade-in.
         applyIncoming(entry);
-        renderOnce();
+        reveal();
+        if (reduceMotion) renderOnce();
         return;
       }
       transition.phase = "out";
@@ -295,6 +326,8 @@ function mountFan(container) {
       transition.incoming = entry;
     } catch (error) {
       console.error("Unable to load ORAE fan model", id, error);
+      // No real model available: reveal the procedural fallback.
+      if (!activeId) reveal();
     }
   }
 
@@ -305,9 +338,8 @@ function mountFan(container) {
     return;
   }
 
-  // Placeholder first, then bring in the real models and cycle.
   let cycleClock = 0;
-  setTimeout(() => showModel(FAN_SEQUENCE[0]), 400);
+  showModel(FAN_SEQUENCE[0]);
 
   function nextModel() {
     if (!activeId) return;
@@ -354,22 +386,27 @@ function mountFan(container) {
       }
     }
 
-    // Swap transition: shrink out, swap, grow back in.
+    // Swap transition: crossfade — fade the current fan out, then the next in.
     if (transition.phase === "out") {
-      transition.t = Math.min(1, transition.t + dt / 0.26);
-      stage.scale.setScalar(1 - easeInOut(transition.t) * 0.94);
+      transition.t = Math.min(1, transition.t + dt / 0.35);
+      setEntryOpacity(current, 1 - easeInOut(transition.t));
       if (transition.t >= 1) {
+        resetEntryOpacity(current);
+        setEntryOpacity(transition.incoming, 0);
         applyIncoming(transition.incoming);
         transition.incoming = null;
         transition.phase = "in";
         transition.t = 0;
       }
     } else if (transition.phase === "in") {
-      transition.t = Math.min(1, transition.t + dt / 0.34);
-      stage.scale.setScalar(0.06 + easeInOut(transition.t) * 0.94);
+      transition.t = Math.min(1, transition.t + dt / 0.45);
+      setEntryOpacity(current, easeInOut(transition.t));
       if (transition.t >= 1) {
-        stage.scale.setScalar(1);
+        resetEntryOpacity(current);
         transition.phase = "idle";
+        // Warm the cache so the next swap starts without waiting.
+        const index = FAN_SEQUENCE.indexOf(activeId);
+        loadFanModel(FAN_SEQUENCE[(index + 1) % FAN_SEQUENCE.length]).catch(() => {});
       }
     }
 
