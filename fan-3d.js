@@ -1,10 +1,10 @@
-/* ── ORAE hero fan configurator ───────────────────────────────
+/* ── ORAE hero fan carousel ───────────────────────────────────
    Renders the real ORAE fans (Draco-compressed GLBs converted
-   from the supplier CAD files) in the hero. A procedural fan is
-   shown instantly as placeholder and stays as fallback when a
-   model fails to load. The blade rotation speeds up with scroll
-   velocity, the camera drifts with the pointer, and the 01–04
-   selector swaps models with a scale transition. */
+   from the supplier CAD files) in the hero and cycles through
+   them automatically. A procedural fan is shown instantly as
+   placeholder and stays as fallback when a model fails to load.
+   The blade rotation speeds up with scroll velocity; an orbiting
+   warm light adds moving highlights. No pointer interaction. */
 
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
@@ -13,6 +13,12 @@ import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const FAN_SEQUENCE = [
+  "classic-white",
+  "classic-rounded-white",
+  "natural-wood-light",
+  "natural-brown-wood-light",
+];
 const FAN_MODELS = {
   "classic-white": "assets/models/fans/fan-2149.glb",
   "classic-rounded-white": "assets/models/fans/fan-2369.glb",
@@ -25,7 +31,7 @@ const MODEL_LABEL_KEYS = {
   "natural-wood-light": "products.fan3.name",
   "natural-brown-wood-light": "products.fan4.name",
 };
-const DEFAULT_MODEL = "classic-white";
+const CYCLE_SECONDS = 7;
 const FAN_DIAMETER = 4.6; // scene units
 const BLADE_PLANE_Y = 0.53; // vertical anchor shared by all models
 
@@ -156,15 +162,13 @@ function loadFanModel(id) {
     modelCache.set(id, getLoader().loadAsync(FAN_MODELS[id]).then((gltf) => {
       const node = gltf.scene;
 
-      // Normalize: real-world mm-scale model -> scene units, axis at origin.
+      // The GLB origin is the motor axis (set during CAD conversion),
+      // so only normalize the size — recentering on the bounding box
+      // would shift the spin axis off-screen-center.
       const box = new THREE.Box3().setFromObject(node);
       const size = box.getSize(new THREE.Vector3());
       const scale = FAN_DIAMETER / Math.max(size.x, size.z);
       node.scale.setScalar(scale);
-
-      const center = box.getCenter(new THREE.Vector3());
-      node.position.x = -center.x * scale;
-      node.position.z = -center.z * scale;
 
       // Anchor the blade plane so every model hangs at the same height.
       const blades = node.getObjectByName("blades");
@@ -179,7 +183,7 @@ function loadFanModel(id) {
   return modelCache.get(id);
 }
 
-function currentLabel(id) {
+function labelFor(id) {
   const key = MODEL_LABEL_KEYS[id];
   return (window.OraeI18n && key && window.OraeI18n.t(key)) || id;
 }
@@ -199,28 +203,36 @@ function mountFan(container) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.02;
+  renderer.toneMappingExposure = 1.08;
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.45;
+  scene.environmentIntensity = 0.55;
 
   const camera = new THREE.PerspectiveCamera(30, 1.5, 0.1, 60);
-  const cameraBase = new THREE.Vector3(0, -0.35, 7.4);
+  camera.position.set(0, -0.35, 7.4);
   const lookTarget = new THREE.Vector3(0, 0.45, 0);
-  camera.position.copy(cameraBase);
   camera.lookAt(lookTarget);
 
-  scene.add(new THREE.HemisphereLight(0xffe9cf, 0x201a12, 0.6));
+  scene.add(new THREE.HemisphereLight(0xffe9cf, 0x1c150e, 0.55));
 
-  const keyLight = new THREE.DirectionalLight(0xffe3bf, 1.3);
+  const keyLight = new THREE.DirectionalLight(0xffe3bf, 1.6);
   keyLight.position.set(3.5, 4.5, 6);
   scene.add(keyLight);
 
-  const rimLight = new THREE.DirectionalLight(0xfff4e6, 0.5);
-  rimLight.position.set(-4.5, 1.5, -3);
+  const rimLight = new THREE.DirectionalLight(0xffe9d2, 0.95);
+  rimLight.position.set(-5, 2.5, -4);
   scene.add(rimLight);
+
+  // Orbiting warm accent: moving highlights across blades and metal.
+  const accentLight = new THREE.SpotLight(0xffd9a4, 90, 26, 0.55, 0.85, 1.6);
+  accentLight.position.set(5, 3, 3);
+  scene.add(accentLight);
+  const accentTarget = new THREE.Object3D();
+  accentTarget.position.set(0, 0.5, 0);
+  scene.add(accentTarget);
+  accentLight.target = accentTarget;
 
   const stage = new THREE.Group();
   stage.position.y = 0.55;
@@ -230,6 +242,17 @@ function mountFan(container) {
   stage.add(current.node);
 
   container.classList.add("fan-3d--ready");
+
+  const numEl = document.querySelector("[data-fan-num]");
+  const labelEl = document.querySelector("[data-fan-label]");
+  let activeId = null;
+
+  function syncLabel() {
+    if (!activeId) return;
+    if (numEl) numEl.textContent = String(FAN_SEQUENCE.indexOf(activeId) + 1).padStart(2, "0");
+    if (labelEl) labelEl.textContent = labelFor(activeId);
+  }
+  document.addEventListener("orae:languagechange", syncLabel);
 
   function renderOnce() {
     renderer.render(scene, camera);
@@ -249,22 +272,19 @@ function mountFan(container) {
 
   /* ── Model switching ── */
   const transition = { phase: "idle", t: 0, incoming: null };
-  let requestedId = null;
-  let activeId = null;
 
   function applyIncoming(entry) {
     stage.remove(current.node);
     current = entry;
-    current.node.scale.multiplyScalar(1); // keep normalized scale
     stage.add(current.node);
   }
 
-  async function selectModel(id, { animate = true } = {}) {
-    requestedId = id;
+  async function showModel(id, { animate = true } = {}) {
     try {
       const entry = await loadFanModel(id);
-      if (requestedId !== id || activeId === id) return;
+      if (activeId === id) return;
       activeId = id;
+      syncLabel();
       if (reduceMotion || !animate) {
         applyIncoming(entry);
         renderOnce();
@@ -278,42 +298,21 @@ function mountFan(container) {
     }
   }
 
-  /* Selector UI (outside the aria-hidden canvas container) */
-  const buttons = Array.from(document.querySelectorAll("[data-fan-choice]"));
-  const label = document.querySelector("[data-fan-label]");
-
-  function syncSelector(id) {
-    buttons.forEach((btn) => {
-      const isActive = btn.dataset.fanChoice === id;
-      btn.classList.toggle("is-active", isActive);
-      btn.setAttribute("aria-pressed", String(isActive));
-    });
-    if (label) label.textContent = currentLabel(id);
-  }
-
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.fanChoice;
-      if (!FAN_MODELS[id]) return;
-      syncSelector(id);
-      selectModel(id);
-    });
-  });
-
-  document.addEventListener("orae:languagechange", () => {
-    if (label && (activeId || requestedId)) label.textContent = currentLabel(activeId || requestedId);
-  });
-
-  syncSelector(DEFAULT_MODEL);
-  // Let the placeholder appear instantly, then bring in the real model.
-  setTimeout(() => {
-    if (!requestedId) selectModel(DEFAULT_MODEL);
-  }, reduceMotion ? 0 : 400);
-
   if (reduceMotion) {
     current.blades.rotation.y = 0.5;
     renderOnce();
+    showModel(FAN_SEQUENCE[0], { animate: false });
     return;
+  }
+
+  // Placeholder first, then bring in the real models and cycle.
+  let cycleClock = 0;
+  setTimeout(() => showModel(FAN_SEQUENCE[0]), 400);
+
+  function nextModel() {
+    if (!activeId) return;
+    const index = FAN_SEQUENCE.indexOf(activeId);
+    showModel(FAN_SEQUENCE[(index + 1) % FAN_SEQUENCE.length]);
   }
 
   /* ── Animation loop ── */
@@ -321,12 +320,6 @@ function mountFan(container) {
   let boost = 0;
   let lastScrollY = window.scrollY;
   let lastTime = performance.now();
-  const pointer = { x: 0, y: 0 };
-
-  window.addEventListener("pointermove", (e) => {
-    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-    pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
-  }, { passive: true });
 
   let inView = true;
   const io = new IntersectionObserver((entries) => {
@@ -352,11 +345,19 @@ function mountFan(container) {
     spin += (1.15 + boost) * dt;
     if (current.blades) current.blades.rotation.y = spin;
 
+    // Auto-cycle through the four fans.
+    if (activeId && transition.phase === "idle") {
+      cycleClock += dt;
+      if (cycleClock >= CYCLE_SECONDS) {
+        cycleClock = 0;
+        nextModel();
+      }
+    }
+
     // Swap transition: shrink out, swap, grow back in.
     if (transition.phase === "out") {
       transition.t = Math.min(1, transition.t + dt / 0.26);
-      const k = 1 - easeInOut(transition.t) * 0.94;
-      stage.scale.setScalar(k);
+      stage.scale.setScalar(1 - easeInOut(transition.t) * 0.94);
       if (transition.t >= 1) {
         applyIncoming(transition.incoming);
         transition.incoming = null;
@@ -372,13 +373,13 @@ function mountFan(container) {
       }
     }
 
+    // Gentle time-based sway only — no pointer influence.
     const t = now / 1000;
-    stage.rotation.z = Math.sin(t * 0.5) * 0.012 - pointer.x * 0.02;
-    stage.rotation.x = Math.sin(t * 0.35) * 0.008 + pointer.y * 0.015;
+    stage.rotation.z = Math.sin(t * 0.4) * 0.01;
+    stage.rotation.x = Math.sin(t * 0.28) * 0.007;
 
-    camera.position.x += (cameraBase.x + pointer.x * 0.45 - camera.position.x) * 0.045;
-    camera.position.y += (cameraBase.y - pointer.y * 0.2 - camera.position.y) * 0.045;
-    camera.lookAt(lookTarget);
+    // Slow light orbit for living highlights.
+    accentLight.position.set(Math.cos(t * 0.22) * 5.5, 2.6 + Math.sin(t * 0.13) * 1.2, Math.sin(t * 0.22) * 5.5);
 
     renderer.render(scene, camera);
   }

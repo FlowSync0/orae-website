@@ -90,6 +90,22 @@ for group, files in config["groups"].items():
         obj.data.materials.append(materials[group])
         obj.parent = group_nodes[group]
 
+# Optional generated primitives (e.g. a full luminous disc under the LED ring).
+import mathutils
+for extra in config.get("extras", []):
+    if extra["type"] != "disc":
+        continue
+    bpy.ops.mesh.primitive_cylinder_add(radius=extra["radius"], depth=extra.get("depth", 3), location=(0, 0, 0))
+    obj = bpy.context.active_object
+    group = extra.get("group", "led")
+    obj.name = f"{group}_extra_disc"
+    obj.data.transform(mathutils.Matrix.Translation((0, 0, extra["z"])))
+    obj.scale = (MM, MM, MM)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    obj.data.materials.clear()
+    obj.data.materials.append(materials[extra.get("material", "led")])
+    obj.parent = group_nodes.get(group, root)
+
 bpy.ops.export_scene.gltf(
     filepath=outglb,
     export_format="GLB",

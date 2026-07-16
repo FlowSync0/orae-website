@@ -60,7 +60,17 @@
     0.83,
     0.6
    ],
-   "strength": 4.0
+   "strength": 4.5
   }
- }
+ },
+ "extras": [
+  {
+   "type": "disc",
+   "radius": 80,
+   "depth": 3,
+   "z": 111,
+   "material": "led",
+   "group": "led"
+  }
+ ]
 }
