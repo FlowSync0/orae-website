@@ -189,6 +189,20 @@ function mountFan(container) {
   const lookTarget = new THREE.Vector3(0, 0.45, 0);
   camera.lookAt(lookTarget);
 
+  // Desktop: pull the camera back until the fan only fills ~80% of the frame
+  // width, so blade tips never touch the canvas edges (which reads as a hard
+  // cut mid-hero). Mobile keeps the tighter, validated framing.
+  function frameCamera() {
+    if (!isDesktopLayout()) {
+      camera.position.z = 7.4;
+    } else {
+      const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+      const fitZ = (FAN_DIAMETER / 0.8) / (2 * halfH * camera.aspect);
+      camera.position.z = Math.max(7.4, fitZ);
+    }
+    camera.lookAt(lookTarget);
+  }
+
   scene.add(new THREE.HemisphereLight(0xffe9cf, 0x1c150e, 0.55));
 
   const keyLight = new THREE.DirectionalLight(0xffe3bf, 1.6);
@@ -232,6 +246,7 @@ function mountFan(container) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    frameCamera();
     if (layoutMode !== isDesktopLayout()) {
       layoutMode = isDesktopLayout();
       positionEntry(current);

@@ -589,18 +589,20 @@ html.has-cursor .cursor--view .cursor__dot {
     height: min(68vh, 660px);
     z-index: 3; /* in front of the copy: the fan is never clipped by it */
   }
+  /* Glow and halo track the fan axis (canvas center ≈ 79vw, hub ≈ 42vh) */
   .hero__glow {
     left: auto;
-    right: -18vw;
+    right: -11vw;
     transform: none;
-    top: -18%;
+    top: -8%;
+    width: min(780px, 60vw);
   }
   .hero__halo {
     left: auto;
-    right: -4vw;
+    right: 1vw;
     transform: none;
-    top: 12%;
-    width: min(560px, 44vw);
+    top: 9%;
+    width: min(520px, 40vw);
   }
   .hero__content {
     text-align: left;
