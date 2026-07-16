@@ -288,6 +288,83 @@
     }
   }
 
+  /* ── Product image lightbox ── */
+  const mediaEls = document.querySelectorAll(".product-row__media");
+  if (mediaEls.length) {
+    const lightbox = document.createElement("div");
+    lightbox.className = "lightbox";
+    lightbox.setAttribute("role", "dialog");
+    lightbox.setAttribute("aria-modal", "true");
+    lightbox.hidden = true;
+    lightbox.innerHTML = `
+      <button type="button" class="lightbox__close" data-i18n-aria="lightbox.close" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <figure class="lightbox__figure">
+        <img class="lightbox__img" alt="">
+        <figcaption class="lightbox__caption"></figcaption>
+      </figure>`;
+    document.body.appendChild(lightbox);
+
+    const lbImg = lightbox.querySelector(".lightbox__img");
+    const lbCaption = lightbox.querySelector(".lightbox__caption");
+    const lbClose = lightbox.querySelector(".lightbox__close");
+    let lastOpener = null;
+
+    const t = (key, fallback) =>
+      (window.OraeI18n && window.OraeI18n.t(key)) || fallback;
+
+    function openLightbox(media) {
+      const row = media.closest(".product-row");
+      const img = media.querySelector(".product-row__img--product") || media.querySelector("img");
+      if (!img) return;
+      lbImg.src = img.currentSrc || img.src;
+      lbImg.alt = img.alt || "";
+      lbCaption.textContent = row?.querySelector(".product-row__name")?.textContent || "";
+      lastOpener = media;
+      lightbox.hidden = false;
+      requestAnimationFrame(() => lightbox.classList.add("lightbox--open"));
+      document.body.style.overflow = "hidden";
+      if (lenis) lenis.stop();
+      lbClose.focus({ preventScroll: true });
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("lightbox--open");
+      lightbox.hidden = true;
+      document.body.style.overflow = "";
+      if (lenis) lenis.start();
+      if (lastOpener) lastOpener.focus({ preventScroll: true });
+    }
+
+    lbClose.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !lightbox.hidden) closeLightbox();
+    });
+
+    mediaEls.forEach((media) => {
+      media.setAttribute("role", "button");
+      media.setAttribute("tabindex", "0");
+      media.setAttribute("aria-label", t("lightbox.view", "Voir l'image en grand"));
+      media.addEventListener("click", () => openLightbox(media));
+      media.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openLightbox(media);
+        }
+      });
+    });
+
+    document.addEventListener("orae:languagechange", () => {
+      mediaEls.forEach((media) => {
+        media.setAttribute("aria-label", t("lightbox.view", "Voir l'image en grand"));
+      });
+    });
+  }
+
   /* ── Magnetic elements ── */
   if (finePointer && !reduceMotion && hasGsap) {
     document.querySelectorAll(".magnetic").forEach((el) => {
