@@ -583,10 +583,11 @@ html.has-cursor .cursor--view .cursor__dot {
   }
   .fan-3d {
     left: auto;
-    right: -6vw;
+    right: -2vw;
     transform: none;
-    width: min(58vw, 900px);
-    height: min(80vh, 780px);
+    width: min(46vw, 720px);
+    height: min(68vh, 660px);
+    z-index: 3; /* in front of the copy: the fan is never clipped by it */
   }
   .hero__glow {
     left: auto;
