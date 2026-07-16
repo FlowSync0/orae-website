@@ -191,6 +191,30 @@
     }
   }
 
+  /* ── FAQ accordion ── */
+  const faqSection = document.querySelector(".faq");
+  if (faqSection) {
+    const items = Array.from(faqSection.querySelectorAll(".faq-item"));
+    // The enhanced class switches the CSS to collapsed-by-default; without
+    // JS every answer stays visible so the content is never trapped.
+    if (items.length) faqSection.classList.add("faq--enhanced");
+    items.forEach((item) => {
+      const trigger = item.querySelector(".faq-item__trigger");
+      const panel = item.querySelector(".faq-item__panel");
+      if (!trigger || !panel) return;
+      trigger.setAttribute("aria-expanded", "false");
+      panel.setAttribute("inert", "");
+      trigger.addEventListener("click", () => {
+        const open = item.classList.toggle("is-open");
+        trigger.setAttribute("aria-expanded", String(open));
+        if (open) panel.removeAttribute("inert");
+        else panel.setAttribute("inert", "");
+        // Panel height changed: trigger positions below the FAQ are stale.
+        if (hasGsap) ScrollTrigger.refresh();
+      });
+    });
+  }
+
   /* ── Stat counters ── */
   if (hasGsap && !reduceMotion) {
     document.querySelectorAll("[data-counter]").forEach((el) => {
