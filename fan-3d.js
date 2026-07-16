@@ -20,10 +20,10 @@ const FAN_SEQUENCE = [
   "natural-brown-wood-light",
 ];
 const FAN_MODELS = {
-  "classic-white": "assets/models/fans/fan-2149.glb",
-  "classic-rounded-white": "assets/models/fans/fan-2369.glb",
-  "natural-wood-light": "assets/models/fans/fan-132L.glb",
-  "natural-brown-wood-light": "assets/models/fans/fan-3372B.glb",
+  "classic-white": "assets/models/fans/fan-2149.glb?v=2",
+  "classic-rounded-white": "assets/models/fans/fan-2369.glb?v=2",
+  "natural-wood-light": "assets/models/fans/fan-132L.glb?v=2",
+  "natural-brown-wood-light": "assets/models/fans/fan-3372B.glb?v=2",
 };
 const MODEL_LABEL_KEYS = {
   "classic-white": "products.fan1.name",
@@ -33,7 +33,12 @@ const MODEL_LABEL_KEYS = {
 };
 const CYCLE_SECONDS = 7;
 const FAN_DIAMETER = 4.6; // scene units
-const BLADE_PLANE_Y = 0.53; // vertical anchor shared by all models
+
+// Vertical anchor (stage-local) for the blade plane. Lower on desktop so the
+// fan sits mid-viewport; slightly higher on mobile to clear the copy below.
+const isDesktopLayout = () => window.innerWidth >= 900;
+const bladeLocalY = () => (isDesktopLayout() ? -0.55 : -0.2);
+const ROD_TOP_Y = 2.9; // stage-local, safely past the canvas top edge
 
 /* ── Procedural placeholder fan ── */
 
@@ -157,27 +162,79 @@ function getLoader() {
 }
 
 const modelCache = new Map();
+const preparedEntries = [];
+
+function rodMaterialFor(inner) {
+  for (const name of ["rod", "canopy", "motor"]) {
+    const group = inner.getObjectByName(name);
+    if (!group) continue;
+    let found = null;
+    group.traverse((child) => {
+      if (!found && child.isMesh && child.material) found = child.material;
+    });
+    if (found) {
+      return new THREE.MeshStandardMaterial({
+        color: found.color ? found.color.clone() : new THREE.Color(0x2a2a2c),
+        roughness: found.roughness ?? 0.4,
+        metalness: found.metalness ?? 0.4,
+      });
+    }
+  }
+  return new THREE.MeshStandardMaterial({ color: 0x2a2a2c, roughness: 0.4, metalness: 0.4 });
+}
+
+/* Position the fan on its blade-plane anchor and (re)build the downrod
+   extension that ties the canopy to the top edge of the canvas. */
+function positionEntry(entry) {
+  entry.inner.position.y = bladeLocalY() - entry.anchorY;
+  if (entry.rod) {
+    entry.node.remove(entry.rod);
+    entry.rod.geometry.dispose();
+  }
+  const top = new THREE.Box3().setFromObject(entry.inner).max.y;
+  const length = Math.max(0.001, ROD_TOP_Y - top + 0.06);
+  const rod = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.028, 0.028, length, 20),
+    entry.rodMaterial
+  );
+  rod.position.y = top - 0.03 + length / 2;
+  entry.node.add(rod);
+  entry.rod = rod;
+}
+
 function loadFanModel(id) {
   if (!modelCache.has(id)) {
     modelCache.set(id, getLoader().loadAsync(FAN_MODELS[id]).then((gltf) => {
-      const node = gltf.scene;
+      const inner = gltf.scene;
 
       // The GLB origin is the motor axis (set during CAD conversion),
       // so only normalize the size — recentering on the bounding box
       // would shift the spin axis off-screen-center.
-      const box = new THREE.Box3().setFromObject(node);
+      const box = new THREE.Box3().setFromObject(inner);
       const size = box.getSize(new THREE.Vector3());
       const scale = FAN_DIAMETER / Math.max(size.x, size.z);
-      node.scale.setScalar(scale);
+      inner.scale.setScalar(scale);
 
-      // Anchor the blade plane so every model hangs at the same height.
-      const blades = node.getObjectByName("blades");
-      const anchor = blades || node;
+      const blades = inner.getObjectByName("blades");
+      const anchor = blades || inner;
       const anchorBox = new THREE.Box3().setFromObject(anchor);
       const anchorY = (anchorBox.min.y + anchorBox.max.y) / 2;
-      node.position.y = BLADE_PLANE_Y - anchorY;
 
-      return { node, blades, materials: collectMaterials(node) };
+      const node = new THREE.Group();
+      node.add(inner);
+      const entry = {
+        node,
+        inner,
+        blades,
+        anchorY,
+        rod: null,
+        rodMaterial: rodMaterialFor(inner),
+        materials: [],
+      };
+      positionEntry(entry);
+      entry.materials = collectMaterials(node);
+      preparedEntries.push(entry);
+      return entry;
     }));
   }
   return modelCache.get(id);
@@ -286,12 +343,17 @@ function mountFan(container) {
     renderer.render(scene, camera);
   }
 
+  let layoutMode = isDesktopLayout();
   function resize() {
     const width = Math.max(1, container.clientWidth);
     const height = Math.max(1, container.clientHeight);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    if (layoutMode !== isDesktopLayout()) {
+      layoutMode = isDesktopLayout();
+      preparedEntries.forEach(positionEntry);
+    }
     if (reduceMotion) renderOnce();
   }
   const observer = new ResizeObserver(resize);

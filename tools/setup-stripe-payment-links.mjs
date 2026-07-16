@@ -187,16 +187,23 @@ async function ensurePaymentLink(secretKey, product, price, shippingRate, existi
     const existing = await stripeRequest(secretKey, `/payment_links/${existingSummary.id}`, {
       params: { "expand[]": "line_items" }
     });
+    // Stripe does not expose adjustable_quantity when reading a payment
+    // link's line items, so the applied maximum is mirrored in metadata.
     const isCurrent = (
       getPaymentLinkPriceId(existing) === price.id
       && getPaymentLinkShippingRateId(existing) === shippingRate.id
       && existing.restrictions?.completed_sessions?.limit === product.stock
+      && existing.metadata?.orae_adjustable_max === String(product.stock)
     );
 
-    if (!isCurrent) {
-      throw new Error(`The active Stripe payment link for ${product.name} differs from the storefront configuration.`);
-    }
-    return existing;
+    if (isCurrent) return existing;
+
+    // The live link no longer matches the configuration (price, shipping or
+    // quantity rules changed): retire it and create a fresh one below.
+    await stripeRequest(secretKey, `/payment_links/${existing.id}`, {
+      method: "POST",
+      params: { active: false }
+    });
   }
 
   return stripeRequest(secretKey, "/payment_links", {
@@ -204,6 +211,9 @@ async function ensurePaymentLink(secretKey, product, price, shippingRate, existi
     params: {
       "line_items[0][price]": price.id,
       "line_items[0][quantity]": 1,
+      "line_items[0][adjustable_quantity][enabled]": true,
+      "line_items[0][adjustable_quantity][minimum]": 1,
+      "line_items[0][adjustable_quantity][maximum]": product.stock,
       "after_completion[type]": "redirect",
       "after_completion[redirect][url]": SUCCESS_URL,
       billing_address_collection: "required",
@@ -216,7 +226,8 @@ async function ensurePaymentLink(secretKey, product, price, shippingRate, existi
       "custom_text[submit][message]": "Livraison en France métropolitaine. Retours sous 14 jours selon la politique de retours ORAE.",
       "metadata[orae_product_id]": product.id,
       "metadata[sku]": product.sku,
-      "metadata[gtin]": product.gtin
+      "metadata[gtin]": product.gtin,
+      "metadata[orae_adjustable_max]": product.stock
     }
   });
 }

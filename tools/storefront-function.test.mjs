@@ -45,7 +45,18 @@ test("returns Stripe prices and remaining inventory without exposing link IDs", 
   };
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {
-    const isSold = String(url).includes("plink_sold");
+    const target = String(url);
+    const isSold = target.includes("plink_sold");
+
+    if (target.includes("/checkout/sessions")) {
+      // Quantities are adjustable: one buyer took two "sold" units in a
+      // single session, another took the last one.
+      const sessions = isSold
+        ? [{ id: "cs_1", amount_total: 33200 }, { id: "cs_2", amount_total: 16600 }]
+        : [{ id: "cs_3", amount_total: 15600 }];
+      return new Response(JSON.stringify({ data: sessions, has_more: false }));
+    }
+
     return new Response(JSON.stringify({
       active: !isSold,
       url: isSold
@@ -53,7 +64,7 @@ test("returns Stripe prices and remaining inventory without exposing link IDs", 
         : "https://buy.stripe.com/live-available",
       restrictions: {
         completed_sessions: {
-          count: isSold ? 3 : 1,
+          count: isSold ? 2 : 1,
           limit: 3
         }
       },
