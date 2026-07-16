@@ -462,7 +462,7 @@ html.has-cursor .cursor--view .cursor__dot {
   left: 50%;
   transform: translateX(-50%);
   width: min(880px, 110vw);
-  height: min(62vh, 640px);
+  height: clamp(300px, 42vh, 480px);
   pointer-events: none;
 }
 
@@ -604,6 +604,54 @@ html.has-cursor .cursor--view .cursor__dot {
 
 .hero__spec {
   text-align: right;
+}
+
+/* Desktop: editorial split — copy on the left, the 3D fan on the right.
+   The canvas sits below .hero__content in the stacking order, so blade
+   tips sweep behind the text. */
+@media (min-width: 900px) {
+  .hero {
+    align-items: flex-start;
+  }
+  .fan-3d {
+    left: auto;
+    right: -6vw;
+    transform: none;
+    width: min(58vw, 900px);
+    height: min(80vh, 780px);
+  }
+  .hero__glow {
+    left: auto;
+    right: -18vw;
+    transform: none;
+    top: -18%;
+  }
+  .hero__halo {
+    left: auto;
+    right: -4vw;
+    transform: none;
+    top: 12%;
+    width: min(560px, 44vw);
+  }
+  .hero__content {
+    text-align: left;
+    max-width: 640px;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  .hero__title-line {
+    font-size: clamp(3rem, 6vw, 6rem);
+  }
+  .hero__title-line--accent {
+    font-size: clamp(3.4rem, 7vw, 7rem);
+  }
+  .hero__subtitle {
+    margin-left: 0;
+    max-width: 460px;
+  }
+  .hero__actions {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 720px) {
