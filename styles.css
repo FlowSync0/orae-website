@@ -1881,6 +1881,10 @@ html.has-cursor .cursor--view .cursor__dot {
 }
 
 /* ── Lightbox ── */
+.lightbox[hidden] {
+  display: none; /* the explicit flex below would otherwise defeat [hidden] */
+}
+
 .lightbox {
   position: fixed;
   inset: 0;
