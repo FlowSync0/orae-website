@@ -1622,7 +1622,8 @@ html.has-cursor .cursor--view .cursor__dot {
 
 .footer__copy,
 .footer__contact,
-.footer__availability {
+.footer__availability,
+.footer__company {
   font-size: 0.8rem;
   color: rgba(244, 239, 230, 0.5);
 }
